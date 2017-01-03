@@ -52,8 +52,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav" id="navUl">
-                <li class="active"><a id="fLink" href="#">JSON Validator</a></li>
-               <!-- <li><a href="jsontobson.html">JSON to BSON</a></li> -->
+                <li><a href="index.html">JSON Validator</a></li>
+                <li class="active"><a href="#" id="jToBLink">JSON to BSON</a></li>
+                <li><a href="#">BSON to JSON</a></li>
+                <li><a href="#">JSON to XML</a></li>
+                <li><a href="#">XML to JSON</a></li>
+                <li><a href="#">Learn JSON</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -83,14 +87,14 @@
             </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <textarea  id="txareaFrom" cols="150" rows="25" class="form-control" spellcheck="false"></textarea>
-                    </td>
-                    <td>
-                        <textarea  id="txareaTo" cols="150" rows="25" class="form-control" spellcheck="false"></textarea>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <textarea  id="txareaFrom" cols="150" rows="25" class="form-control" spellcheck="false"></textarea>
+                </td>
+                <td>
+                    <textarea  id="txareaTo" cols="150" rows="25" class="form-control" spellcheck="false"></textarea>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -107,8 +111,9 @@
 <script src="js/formatter.js"></script>
 <script src="js/jsonlint.js"></script>
 <script>
+    $('textarea').numberedtextarea();
+
     $(function() {
-        $('#txareaOne').numberedtextarea();
         $('#txareaOne').focus();
         $('#txareaOne').on('paste', function () {
             var element = this;
@@ -119,6 +124,25 @@
         $('#jsonFBtn').click(function(){
             valAndFor();
         });
+        $('#fLink').click(function(){
+            $('#formatter').show();
+            $('#converter').hide();
+            $('#actionT').val("fLink");
+            unActLnks();
+            $(this).closest('li').addClass('active');
+        });
+        $('#jToBLink').click(function(){
+            setShowAct("jToBLink","JSON to BSON Converter","JSON:","BSON:",$(this));
+        });
+        $('#bToJLink').click(function(){
+            setShowAct("bToJLink","BSON to JSON Converter","BSON:","JSON:",$(this));
+        });
+        $('#jToXLink').click(function(){
+            setShowAct("xToJLink","JSON to XML Converter","JSON:","XML:",$(this));
+        });
+        $('#xToJLink').click(function(){
+            setShowAct("jToXLink","XML to JSON Converter","XML:","JSON:",$(this));
+        });
     });
 
     var valAndFor = function(){
@@ -128,9 +152,32 @@
             jsonlint.parse(oldJson);
         } catch (e) {
             $('#errDiv').html(e.message).show();
+            // retrieve line number from error string
+            // lineMatches = e.message.match(/line ([0-9]*)/);
+
+            // if (lineMatches && lineMatches.length > 1) {
+            //     this.highlightErrorLine(+lineMatches[1] - 1);
+            // }
+
+            //this.notify(false, e);
         }
         var newJson = formatter.formatJson(oldJson);
         $('#txareaOne').val(newJson);
+    }
+
+    var setShowAct = function (lid,ch,fr,to,ele){
+        $('#formatter').hide();
+        $('#converter').show();
+        $('#cHeader').html(ch);
+        $('#fromTh').html(fr);
+        $('#toTh').html(to);
+        $('#actionT').val(lid);
+        unActLnks();
+        $(ele).closest('li').addClass('active');
+    }
+
+    var unActLnks = function () {
+        $('li').removeClass('active');
     }
 </script>
 </body>

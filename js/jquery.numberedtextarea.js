@@ -78,11 +78,11 @@
         }); 
         
         lineNumbers.css({
-            paddingLeft: paddingLeft + 'px',
+            paddingLeft: 5 + 'px',
             paddingTop: paddingTop + 'px',
             lineHeight: element.css('line-height'),
             fontFamily: element.css('font-family'),
-            width: lineNumbers.width() - paddingLeft + 'px',
+            width: 50 + 'px',
         });
         
         element.trigger('change');
