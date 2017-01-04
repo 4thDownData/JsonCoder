@@ -70,7 +70,7 @@
         var lineNumbers = $('<div class="numberedtextarea-line-numbers"></div>').insertAfter(element);
         
         element.css({
-            paddingLeft: paddingLeft + lineNumbers.width() + 'px'
+            paddingLeft: 75 + 'px'
         }).on('input propertychange change keyup paste', function() {
             renderLineNumbers(element, settings);
         }).on('scroll', function() {
