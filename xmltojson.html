@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="Free Online JSON Coder easily let's you Format, Validate or Minimize JSON, Convert JSON to XML, Minimize XML">
+    <meta name="description" content="Free Online JSON Coder easily let's you Convert XML to JSON, Minimize JSON. Format, Validate or Minimize JSON">
     <meta name="author" content="">
     <link rel="icon" href="images/favicon.ico">
 
-    <title>Free Online JSON Formatter and Validator</title>
+    <title>Free Online XML to JSON Converter</title>
 
     <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -62,27 +62,46 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav" id="navUl">
-                <li class="active"><a id="fLink" href="index.html">JSON Validator</a></li>
+                <li><a id="fLink" href="index.html">JSON Validator</a></li>
                 <li><a href="jsontoxml.html">JSON to XML</a></li>
-                <li><a href="xmltojson.html">XML to JSON</a></li>
+                <li class="active"><a href="xmltojson.html">XML to JSON</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 
-
 <div class="container">
     <iframe src="//rcm-na.amazon-adsystem.com/e/cm?o=1&p=13&l=ez&f=ifr&linkID=c77dae095e2bacf1cdb05220ee898b15&t=jsoncoder-20&tracking_id=jsoncoder-20" width="468" height="60" scrolling="no" border="0" marginwidth="0" style="border:none;" frameborder="0"></iframe>
-    <!-- Main component for a primary marketing message or call to action -->
-    <div class="jumbotron" id="formatter">
-        <div id="errDiv" class="alert alert-danger" role="alert" style="display: none"></div>
-        <textarea  id="txareaOne" cols="150" rows="20" class="form-control" spellcheck="false" placeholder="Enter JSON to Validate and Format"></textarea>
-        <a href="#" id="clearBtn" class="btn btn-primary pull-right">Clear</a>
-        <a href="#" id="jsonMBtn" class="btn btn-primary pull-right">Minimize</a>
-        <a href="#" id="jsonFBtn" class="btn btn-primary pull-right">Validate and Pretty Print</a>
+    <div id="errDiv" class="alert alert-danger" role="alert" style="display: none"></div>
+    <div class="jumbotron" id="converter">
+        <table>
+            <tbody>
+            <tr>
+                <td>
+                    <textarea  id="txareaFrom" cols="150" rows="20" class="form-control" spellcheck="false" placeholder="Enter XML Here"></textarea>
+                </td>
+                <td>
+                    <textarea  id="txareaTo" cols="150" rows="20" class="form-control" spellcheck="false"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#" id="jsonFBtn" class="btn btn-primary pull-right">Transform to JSON</a>
+                    <a href="#" id="taFClearBtn" class="btn btn-primary pull-right">Clear</a>
+                </td>
+                <td>
+                    <a href="#" id="prettyBtn" class="btn btn-primary pull-right">Pretty Print</a>
+                    <a href="#" id="minBtn" class="btn btn-primary pull-right">Minimize</a>
+                    <a href="#" id="clearBtn" class="btn btn-primary pull-right">Clear</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
     </div>
 
 </div> <!-- /container -->
+
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -90,47 +109,58 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="js/jquery.numberedtextarea.js"></script>
-<script src="js/formatter.js"></script>
-<script src="js/jsonlint.js"></script>
+<script src="js/xml2json.min.js"></script>
 <script src="js/vkbeautify.js"></script>
 <script>
+    $('textarea').numberedtextarea();
+
     $(function() {
-        $('#txareaOne').numberedtextarea();
-        $('#txareaOne').focus();
-        $('#txareaOne').on('paste', function () {
-            var element = this;
-            setTimeout(function () {
-                valAndFor();
-            }, 0);
-        });
+        $('#txareaFrom').focus();
         $('#jsonFBtn').click(function(){
-            valAndFor();
-        });
-        $('#jsonMBtn').click(function(){
-            $('#errDiv').html('').hide();
-            try {
-                var jsonStr = $('#txareaOne').val();
-                $('#txareaOne').val(vkbeautify.jsonmin(jsonStr)).trigger('change');
-            } catch (e) {
-                $('#errDiv').html(e.message).show();
-            }
+            trans();
         });
         $('#clearBtn').click(function(){
             $('#errDiv').html('').hide();
-            $('#txareaOne').val('').trigger('change').focus();
+            $('#txareaTo').val('');
+        });
+        $('#taFClearBtn').click(function(){
+            $('#errDiv').html('').hide();
+            $('#txareaFrom').val('');
+        });
+        $('#prettyBtn').click(function(){
+            try {
+                var xmlStr = $('#txareaTo').val();
+                $('#txareaTo').val(vkbeautify.json(xmlStr,4)).trigger('change');
+            } catch (e) {
+                alert(e.message);
+            }
+        })
+        $('#minBtn').click(function(){
+            try {
+                var xmlStr = $('#txareaTo').val();
+                $('#txareaTo').val(vkbeautify.jsonmin(xmlStr)).trigger('change');
+            } catch (e) {
+                alert(e.message);
+            }
+        });
+        $('#txareaFrom').on('paste', function () {
+            var element = this;
+            setTimeout(function () {
+                trans();
+            }, 0);
         });
     });
 
-    var valAndFor = function(){
+    var trans = function(){
         $('#errDiv').html('').hide();
-        var oldJson = $('#txareaOne').val();
+        var xmlString = $('#txareaFrom').val();
         try {
-            jsonlint.parse(oldJson);
+            var x2js = new X2JS();
+            var jsonStr = x2js.xml_str2json(String(xmlString));
+            $('#txareaTo').val(JSON.stringify(jsonStr)).trigger('change');
         } catch (e) {
             $('#errDiv').html(e.message).show();
         }
-        var newJson = formatter.formatJson(oldJson);
-        $('#txareaOne').val(newJson).trigger('change');
     }
 </script>
 </body>

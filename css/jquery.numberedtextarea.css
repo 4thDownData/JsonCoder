@@ -18,6 +18,7 @@ div.numberedtextarea-line-numbers {
   border-right: 1px solid #000000;
   color: #000000;
   overflow: hidden;
+  background-color: whitesmoke;
 }
 
 div.numberedtextarea-number {
